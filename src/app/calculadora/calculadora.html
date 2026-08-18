@@ -1,0 +1,55 @@
+<h1>Calculadora</h1>
+
+<label>Primer número:</label>
+<input type="number" [(ngModel)]="numero1">
+
+<br><br>
+
+<label>Segundo número:</label>
+<input type="number" [(ngModel)]="numero2">
+
+<br><br>
+
+<label>Operación:</label>
+
+<select [(ngModel)]="operacion">
+  <option value="+">+</option>
+  <option value="-">-</option>
+  <option value="x">x</option>
+  <option value="%">%</option>
+</select>
+
+<br><br>
+
+<button (click)="calcular()">
+  Calcular
+</button>
+
+<br><br>
+
+<label>Resultado:</label>
+<input type="number" [value]="resultado" readonly>
+
+<hr>
+
+<h2>Historial</h2>
+
+<p *ngIf="historial.length === 0">
+  No hay operaciones realizadas.
+</p>
+
+<div *ngFor="let item of historial">
+  <p>
+    {{ item.numero1 }}
+    {{ item.operacion }}
+    {{ item.numero2 }}
+    =
+    <strong>{{ item.resultado }}</strong>
+  </p>
+</div>
+
+<button
+  *ngIf="historial.length > 0"
+  (click)="borrarHistorial()">
+  Borrar historial
+</button>
