@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de compras</title>
+</head>
+<body>
+
+<h1>Lista de compras</h1>
+
+<div>
+  <input type="text" id="nombre" placeholder="Producto">
+  <input type="number" id="cantidad" placeholder="Cantidad" min="1" step="1" value="1">
+  <input type="number" id="precio" placeholder="Precio" min="0" step="0.01">
+  <button id="btnAdd" type="button">Agregar</button>
+</div>
+
+<p id="hint"></p>
+
+<ul id="items"></ul>
+
+<p>Total: <span id="total">0.00</span></p>
+
+<script>
+  let items = [];
+  let seq = 0;
+
+  const nombreInput = document.getElementById('nombre');
+  const cantidadInput = document.getElementById('cantidad');
+  const precioInput = document.getElementById('precio');
+  const btnAdd = document.getElementById('btnAdd');
+  const itemsList = document.getElementById('items');
+  const totalEl = document.getElementById('total');
+  const hint = document.getElementById('hint');
+
+  function makeId(){
+    seq += 1;
+    return 'item-' + Date.now().toString(36) + '-' + seq;
+  }
+
+  function render(){
+    // Limpiar la lista usando el DOM
+    while(itemsList.firstChild){
+      itemsList.removeChild(itemsList.firstChild);
+    }
+
+    items.forEach(it => {
+      const li = document.createElement('li');
+      li.id = it.id;
+
+      const subtotal = (it.price * it.qty).toFixed(0);
+      li.textContent = it.name + ' - Cantidad: ' + it.qty + ' - Precio: ' + subtotal;
+
+      itemsList.appendChild(li);
+    });
+
+    const total = items.reduce((sum, it) => sum + it.price * it.qty, 0);
+    totalEl.textContent = total.toFixed(0);
+  }
+
+  function addItem(){
+    const name = nombreInput.value.trim();
+    const qty = parseInt(cantidadInput.value, 10);
+    const price = parseFloat(precioInput.value);
+
+    if(!name || isNaN(price) || price < 0 || isNaN(qty) || qty < 1){
+      hint.textContent = 'Escribe nombre, cantidad y precio válidos.';
+      return;
+    }
+    hint.textContent = '';
+
+    items.push({ id: makeId(), name, qty, price });
+    render();
+
+    nombreInput.value = '';
+    cantidadInput.value = '1';
+    precioInput.value = '';
+    nombreInput.focus();
+  }
+
+  btnAdd.addEventListener('click', addItem);
+
+  render();
+</script>
+</body>
+</html>
